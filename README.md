@@ -19,7 +19,7 @@ While reading paper “Crafting Adversarial Input Sequences for Recurrent Neural
 L2 attack allows smaller distortion to multiple input values to force neural network to misclassify. The L2 attack is optimization problem which tries to find adversarial example using gradient descent. L2 attack achieve this by trying to minimize following loss by searching appropriate w value.
 
 
-Image 
+<img src="https://github.com/kartik-joshi/Adversarial-Attack-on-Recurrent-Neural-Network/blob/master/L2%20Function%20.jpg" width="500"> 
 
 I can divide above loss value in two part. First part of loss tries to minimize L2 distance between original and adversarial image. And second part tries to generate adversarial inputs by modifying probabilities.
 In case of targeted attack, L2 tries to increase the target class probability and where as in case untagated attack L2 tries to reduce correct class probability as much as possible. Which in turn increases probability of other incorrect classes. Here in loss function tanh() tries to impose box constraint on output, which forces output not to go out of -0.5 to 0.5 value range.
@@ -29,23 +29,25 @@ The gradient descent algorithm are prone to stuck in local minima. To avoid grad
 ## RNN Sentiment Analysis
 As mentioned earlier to perform attack on Recurrent neural network. I took sentiment analysis problem. Sentiment analysis is widely known problem in machine learning, especially in natural language processing. In recent years I have seen good predictability in this area using LSTM recurrent neural network. Keeping that in mind I tried to build an adversarial sample for a LSTM pre trained model that does sentiment analysis. The model which I attacked was developed uses tensorflow written using keras. One of the main reason to use keras because, L2 attack implementation was written in keras. This LSTM models was build for IMDB movie review analysis. I feed the review and it predicts whether its positive or negative.
 
-Sentiment analysis result  image 
+<img src="<img src="https://github.com/kartik-joshi/Adversarial-Attack-on-Recurrent-Neural-Network/blob/master/Sentiment%20Analysis%20Result%20.jpg" width="500"> " width="500"> 
 
 I have IMDB movie review database which contains 25000 training and 25000 testing dataset. Divided as 50-50% for positive and negative review. Please find the model summary in above image. Sentiment analysis requires word indexing and word embedding which is taken care here using keras pre build layers. Each review is first converted into vector 256 length containing token index for given review. Here average vector size for all review is 240, so I am considering entire content for most of the review. The main reason for keeping it to 256 was because it allows us to easily integrate that to our L2 implementation. The first layer is reshape layer the input generated and feeded to our trained model in is a shape of (batch size,16,16,1). I need to reshape that and then convert it to (batch size, 256,128). Here 128 is a vector embedding, Each index is mapped with a respective vector with length of 128. Once the data reshaped I feed to a LSTM unites. Here I have total 128 LSTM units same as vector length. At the end I have dense layer that gives us value before softmax. The reason to have two nodes as the end is I need value before softmax as response to L2 attack such that I can push given adversarial sample to other class classification.
 
-LSTM model Image 
+<img src="<img src="https://github.com/kartik-joshi/Adversarial-Attack-on-Recurrent-Neural-Network/blob/master/LSTM%20Model%20Diagram.jpg" width="500"> " width="500"> 
 
 Please find the architecture I used to build sentiment analysis model in above image. That explains how our model works and how it gives the two value from last layer for each
 review.
 
-**Result of Sentiment analysis**
+Result of Sentiment analysis: 
 
-| Test Accuracy | 0.86 |
-| Train Accuracy | 0.98 |
-| Dataset | IMDB Reviews | 
-| Train samples | 25000 | 
-| Test | 25000 | 
-| Epoch | 8 | 
+|1|2|
+|---|---|
+|Test Accuracy |0.86 |
+|Train Accuracy |0.98 |
+|Dataset |IMDB Reviews | 
+|Train samples |25000 | 
+|Test |25000 | 
+|Epoch |8 | 
 
 
 As shows in above image with 8 epoch I managed to get 98% train accuracy and 86% test accuracy.
@@ -70,14 +72,7 @@ sudo pip3 install --upgrade pip
 sudo pip3 install pillow scipy numpy tensorflow-gpu keras h5py
 ```
 
-## Running attacks
-
-```python
-from robust_attacks import CarliniL2
-CarliniL2(sess, model).attack(inputs, targets)
-```
-
-##And finally to test the attacks
+## To test the attacks
 
 ```bash
 python3 test_attack.py
@@ -86,19 +81,24 @@ python3 test_attack.py
 ## Attack Results 
 I did testing of our code on both targeted and untargeted attack. In targeted attack I didn’t do any modifications to original input (i.e., zero perturbation). I ran this for 1000 sample and got L2 accuracy of 58.2 percent. On this 1000 sample I have average distortion of 6.51689818987.
 
-**Targated attack result**
+Targated attack result: 
 
-| No of samples | 1000 |
-| Accuracy| 58.2 |
-| Average distortion | 6.516 |
+|1|2|
+|---|---|
+|No of samples |1000 |
+|Accuracy|58.2 |
+|Average distortion |6.516 |
 
 For untargeted attack I added little perturbation to the input and tested for sample of 10 and 20. For both the sample I got L2 accuracy of 60% for both cases. For average distortion I got values of 0.0982 and 0.0824 for 10 and 20 sample respectively.
 
-**Untargated attack result**
 
-| No of samples | 20 | 10 | 
-| Accuracy | 0.6 | 0.6 |
-| Average distortion | 0.082 | 0.0982 |
+Untargated attack result:
+
+|1|2|3|
+|---|---|---|
+|No of samples |20 |10 | 
+|Accuracy |0.6 |0.6 |
+|Average distortion |0.082 |0.0982 |
 
 ## Future Work
 
@@ -111,5 +111,7 @@ In this project I found that I can indeed do L2 attack on RNN for both targeted 
 
 ## References:
 **[‘Towards Evaluating the Robustness of Neural Networks’, Nicholas Carlini David Wagner](https://arxiv.org/abs/1608.04644)
+
 **[‘Crafting Adversarial Input Sequences for Recurrent Neural Networks’, Nicolas Papernot and Patrick McDaniel](https://arxiv.org/abs/1604.08275)
+
 **[Sentiment analysis with LSTM using TensorFlow](https://www.oreilly.com/learning/perform-sentiment-analysis-with-lstms-using-tensorflow)
